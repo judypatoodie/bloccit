@@ -14,7 +14,7 @@ describe("routes : topics", () => {
        description: "There is a lot of them"
      })
       .then((topic) => {
-        this.topic = topic;
+        this.topic = topics;
         done();
       })
       .catch((err) => {
