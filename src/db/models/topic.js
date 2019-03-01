@@ -5,10 +5,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    title: {
+    description: {
       type: DataTypes.STRING,
       allowNull: false
-    },
+    }
   }, {});
   Topic.associate = function(models) {
     // associations can be defined here
