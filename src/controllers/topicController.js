@@ -63,6 +63,6 @@ topicQueries.getAllTopics((err, topics) => {
        res.redirect(`/topics/${topic.id}`);
      }
    });
- } 
+ }
 
 }
