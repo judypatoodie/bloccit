@@ -6,47 +6,54 @@ const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
 const Flair = require("../../src/db/models").Flair;
+const User = require("../../src/db/models").User;
 
 describe("routes : flairs", () => {
 
-    beforeEach((done) => {
-        this.topic;
-        this.post;
-        this.flair;
+  beforeEach(done => {
+     this.topic;
+     this.post;
+     this.flair;
+     this.user;
 
-        sequelize.sync({force: true}).then((res) => {
+     sequelize.sync({ force: true }).then(res => {
+       Topic.create({
+         title: "Winter Games",
+         description: "Post your Winter Games stories."
+       }).then(topic => {
+         this.topic = topic;
+         User.create({
+           email: "user@example.com",
+           password: "helloworld"
+         }).then(user => {
+           this.user = user;
 
-            Topic.create({
-                title: "Winter Games",
-                description: "Post your Winter Games stories."
-            }).then((topic) => {
-                this.topic = topic;
+           Post.create({
+             title: "Snowball Fighting",
+             body: "So much snow!",
+             topicId: this.topic.id,
+             userId: this.user.id
+           }).then(post => {
+             this.post = post;
 
-                Post.create({
-                  title: "Snowball Fighting",
-                  body: "So much snow!",
-                  topicId: this.topic.id
-                })
-                .then((post) => {
-                  this.post = post;
-
-                  Flair.create({
-                    name: "flaming hot cheetos",
-               	    color: "red",
-                    postId: this.post.id
-                  })
-                 .then((flair) => {
-                   this.flair = flair;
-                   done();
-                 })
-                 .catch((err) => {
-                   console.log(err);
-                   done();
-                 });
-              });
+             Flair.create({
+               name: "flaming hot cheetos",
+               color: "red",
+               postId: this.post.id
+             })
+               .then(flair => {
+                 this.flair = flair;
+                 done();
+               })
+               .catch(err => {
+                 console.log(err);
+                 done();
+               });
            });
-        });
-    });
+         });
+       });
+     });
+   });
 
     describe("GET /posts/:postId/flairs/new", () => {
         it("should render a new flair form", (done) => {
