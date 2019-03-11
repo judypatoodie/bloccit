@@ -128,6 +128,21 @@ describe("Vote", () => {
           })
         });
 
+        it("should not create a vote with a value other than 1 or -1", (done) => {
+          Vote.create({
+            value: 2,
+            postId: this.post.id,
+            userId: this.user.id
+          })
+          .then((vote) => {
+                 done();
+          })
+          .catch((err) => {
+            expect(err.message).toContain("Validation isIn on value failed");
+            done();
+          });
+      });
+
       });
 
   describe("#setUser()", () => {
@@ -250,4 +265,27 @@ describe("Vote", () => {
       });
 
     });
+
+    describe("#getPoints()", () => {
+
+      it("should return a count of all the votes a post has", (done) => {
+          Vote.create({
+            value: 1,
+            userId: this.user.id,
+            postId: this.post.id
+         })
+         .then((votes) => {
+            let points = this.post.getPoints();
+            expect(points).toBe(1);
+            done();
+         })
+         .catch((err) => {
+            console.log(err);
+            done();
+         });
+       });
+     });
+
+
+
 });
