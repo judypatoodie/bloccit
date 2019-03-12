@@ -266,25 +266,50 @@ describe("Vote", () => {
 
     });
 
-    describe("#getPoints()", () => {
+  describe("#hasUpvoteFor()", () => {
 
-      it("should return a count of all the votes a post has", (done) => {
-          Vote.create({
-            value: 1,
-            userId: this.user.id,
-            postId: this.post.id
-         })
-         .then((votes) => {
-            let points = this.post.getPoints();
-            expect(points).toBe(1);
-            done();
-         })
-         .catch((err) => {
-            console.log(err);
-            done();
-         });
-       });
-     });
+    it("should return true if user has an upvote", (done) => {
+      this.post.votes=[];
+
+      Vote.create({
+        value:1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+        this.post.votes.push(vote);
+        expect(this.post.hasUpvoteFor(this.user.id)).toBe(true);
+        done();
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      })
+    });
+  });
+
+  describe("#hasDownvoteFor()", () => {
+
+    it("should return true if user has an upvote", (done) => {
+      this.post.votes=[];
+
+      Vote.create({
+        value:-1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+        this.post.votes.push(vote);
+        expect(this.post.hasDownvoteFor(this.user.id)).toBe(true);
+        done();
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      })
+    });
+  });
+
 
 
 
