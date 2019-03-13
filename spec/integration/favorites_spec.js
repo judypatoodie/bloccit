@@ -122,6 +122,19 @@ describe("routes : favorites", () => {
          const options = {
            url: `${base}${this.topic.id}/posts/${this.post.id}/favorites/create`
          };
+         Favorite.create({
+                 postId: this.post.id,
+                 userId: this.user.id
+               })
+               .then((favorite) => {
+
+         // #4
+                 expect(favorite.postId).toBe(this.post.id);
+                 expect(favorite.userId).toBe(this.user.id);
+                 done();
+
+               });
+
          request.post(options,
            (err, res, body) => {
              Favorite.findOne({
