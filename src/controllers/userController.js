@@ -7,6 +7,7 @@ module.exports = {
   },
 
   create(req, res, next){
+
       let newUser = {
         email: req.body.email,
         password: req.body.password,
@@ -47,5 +48,21 @@ module.exports = {
     req.logout();
     req.flash("notice", "You've successfully signed out!");
     res.redirect("/");
-  }
+  },
+
+  show(req, res, next){
+
+     userQueries.getUser(req.params.id, (err, result) => {
+
+       if(err || result.user === undefined){
+         req.flash("notice", "No user found with that ID.");
+         res.redirect("/");
+       } else {
+
+         res.render("users/show", {...result});
+       }
+     });
+   }
+
+
 }
