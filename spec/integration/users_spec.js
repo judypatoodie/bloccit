@@ -6,7 +6,7 @@ const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
 const Comment = require("../../src/db/models").Comment;
-
+const Favorite = require("../../src/db/models").Favorite;
 
 describe("routes : users", () => {
 
@@ -108,6 +108,9 @@ describe("routes : users", () => {
         this.user;
         this.post;
         this.comment;
+        this.favoriteUser;
+        this.favoritePost;
+        this.favorite;
 
         User.create({
           email: "starman@tesla.com",
@@ -119,11 +122,16 @@ describe("routes : users", () => {
           Topic.create({
             title: "Winter Games",
             description: "Post your Winter Games stories.",
-            posts: [{
-              title: "Snowball Fighting",
-              body: "So much snow!",
-              userId: this.user.id
-            }]
+            posts: [
+                {
+                    title: "Snowball Fighting",
+                    body: "So much snow!",
+                    userId: this.user.id
+                }, {
+                    title: "Summer Sports",
+                    body: "ALL THE FIREWORKS",
+                    userId: this.user.id
+                }]
           }, {
             include: {
               model: Post,
@@ -132,7 +140,7 @@ describe("routes : users", () => {
           })
           .then((res) => {
             this.post = res.posts[0];
-
+            this.favoritePost = res.posts[1];
             Comment.create({
               body: "This comment is alright.",
               postId: this.post.id,
@@ -140,7 +148,14 @@ describe("routes : users", () => {
             })
             .then((res) => {
               this.comment = res;
-              done();
+              Favorite.create({
+                  postId: this.favoritePost.id,
+                  userId: this.user.id
+              })
+                  .then((res) => {
+                      this.favorite = res;
+                      done();
+                  })
             })
           })
         })
@@ -152,11 +167,14 @@ describe("routes : users", () => {
         request.get(`${base}${this.user.id}`, (err, res, body) => {
 
           expect(body).toContain("Snowball Fighting");
-          expect(body).toContain("This comment is alright.")
+          expect(body).toContain("This comment is alright.");
+          expect(body).toContain("Summer Sports");
           done();
         });
 
       });
+
+
     });
 
 });

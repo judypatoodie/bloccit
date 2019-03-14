@@ -39,5 +39,6 @@ module.exports = (sequelize, DataTypes) => {
       as: "favorites"
     });
   };
+
   return User;
 };
